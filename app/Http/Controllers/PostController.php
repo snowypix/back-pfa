@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class PostController extends Controller
 {
@@ -21,12 +23,14 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        $hashedString = User::where('email', $request)->get();
+        return $hashedString;
         // In your store method
-        $post = Post::create([
-            'title' => $request->input('title'),
-            'body' => $request->input('body'),
-        ]);
-        $post->save();
+        // $post = Post::create([
+        //     'title' => $request->input('title'),
+        //     'body' => $request->input('body'),
+        // ]);
+        // $post->save();
     }
 
     /**

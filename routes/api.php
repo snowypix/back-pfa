@@ -2,18 +2,24 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Middleware\Admin;
 use App\Http\Middleware\VerifyJwt;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
+
 Route::apiResource('posts', PostController::class);
 
-Route::middleware(VerifyJwt::class)->get('/protected', function () {
-    return Auth::user();
-    return response()->json(['message' => 'Protected route']);
+Route::prefix('admin')->middleware([VerifyJwt::class, Admin::class])->group(function () {
+    // Your protected API routes here
+    Route::get('/users', function () {
+        return 'users';
+    });
+
+    Route::post('/products', function () {
+        // Logic for products API
+    });
+
+    // More routes...
 });
-Route::post('/token', [AuthController::class, 'generateJwt'])->name('token');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
