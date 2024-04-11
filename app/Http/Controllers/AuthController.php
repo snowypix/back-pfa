@@ -26,8 +26,7 @@ class AuthController extends Controller
             $payload = base64_encode(json_encode(['sub' => $user->id, 'email' => $user->email]));
             $signature = base64_encode(hash_hmac('sha256', $header . '.' . $payload, 'your-secret-key', true));
             $response = new Response('Logged in');
-            return $header . '.' . $payload . '.' . $signature;
-            return response()->json(['message' => 'Logged in'], 201)->withCookie(cookie('token', $header . '.' . $payload . '.' . $signature, 60));
+            return response()->json(['token' => $header . '.' . $payload . '.' . $signature], 201);
         } else {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
