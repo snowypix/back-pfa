@@ -8,6 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Activity extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'subject',
+        'class',
+        'group',
+        'filePaths',
+        'dateRemise',
+        'intitule',
+        'type',
+        'matiere',
+        'user_id'
+    ];
     public function students()
     {
         return $this->belongsToMany(User::class, 'soummision', 'activity_id', 'student_id')
