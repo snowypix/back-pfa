@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class PostController extends Controller
@@ -57,13 +58,16 @@ class PostController extends Controller
      */
     public function destroy(int $id)
     {
-        $post = Post::find($id);
+        $user = User::find(1);
+        $submissions = $user->activities;
+        dd($submissions);
+        // $post = Post::find($id);
 
-        if ($post) {
-            $post->delete();
-            return 'post' . $id . 'deleted';
-        } else {
-            return 'post not found';
-        }
+        // if ($post) {
+        //     $post->delete();
+        //     return 'post' . $id . 'deleted';
+        // } else {
+        //     return 'post not found';
+        // }
     }
 }

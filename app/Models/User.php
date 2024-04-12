@@ -46,4 +46,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function submissions()
+    {
+        return $this->belongsToMany(Activity::class, 'soummision', 'student_id', 'activity_id')
+            ->withPivot('status', 'lecture');
+    }
+    public function activities()
+    {
+        return $this->hasMany(Activity::class, 'user_id');
+    }
 }
