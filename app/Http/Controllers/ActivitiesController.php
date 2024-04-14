@@ -26,7 +26,6 @@ class ActivitiesController extends Controller
     }
     public function create(Request $request)
     {
-        DB::connection()->enableQueryLog();
         // Validate the request data
         $validatedData = $request->validate([
             'intitule' => 'required|string',
@@ -34,9 +33,10 @@ class ActivitiesController extends Controller
             'class' => 'required|string',
             'group' => 'required|string',
             'type' => 'required|string',
-            'filePaths' => 'string',
+            'filePaths' => 'required|string',
             'dateRemise' => 'string'
         ]);
+        $validatedData['filePaths'] = json_encode($validatedData['filePaths']);
         $validatedData['user_id'] = auth()->user()->id;
         // Create a new activity instance with the validated data
         $activity = Activity::create($validatedData);
@@ -45,5 +45,29 @@ class ActivitiesController extends Controller
             'message' => 'Activity created successfully',
             'activity' => $activity,
         ], 201);
+    }
+    public function createFile(Request $request)
+    {
+        // Check if a file was uploaded
+        if ($request->hasFile('logo')) {
+            // Get the uploaded file
+            $file = $request->file('logo');
+
+            // Get the file name
+            $fileName = $file->getClientOriginalName();
+
+            // Move the uploaded file to a directory
+            $file->move(public_path('uploads'), $fileName);
+
+            // Return a response
+            return response()->json([
+                'fileName' => $fileName
+            ]);
+        } else {
+            // Return an error response
+            return response()->json([
+                'error' => 'No file was uploaded'
+            ], 400);
+        }
     }
 }

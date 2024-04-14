@@ -24,5 +24,6 @@ Route::prefix('admin')->middleware([VerifyJwt::class, Admin::class])->group(func
 });
 Route::get('/activities', [ActivitiesController::class, 'listProf'])->name('listProf')->middleware([VerifyJwt::class]);
 Route::post('/activities/create', [ActivitiesController::class, 'create'])->name('create')->middleware([VerifyJwt::class]);
+Route::post('/activities/create/file', [ActivitiesController::class, 'createFile'])->name('create')->middleware([VerifyJwt::class]);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
