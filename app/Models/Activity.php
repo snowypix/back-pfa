@@ -17,7 +17,8 @@ class Activity extends Model
         'intitule',
         'type',
         'matiere',
-        'user_id'
+        'user_id',
+        'description'
     ];
     public function students()
     {

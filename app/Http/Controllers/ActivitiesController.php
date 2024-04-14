@@ -33,12 +33,14 @@ class ActivitiesController extends Controller
             'class' => 'required|string',
             'group' => 'required|string',
             'type' => 'required|string',
-            'filePaths' => 'required|string',
+            'description' => 'required|string',
+            'filePaths' => 'string',
             'dateRemise' => 'string'
         ]);
         $validatedData['filePaths'] = json_encode($validatedData['filePaths']);
         $validatedData['user_id'] = auth()->user()->id;
         // Create a new activity instance with the validated data
+        // return $validatedData;
         $activity = Activity::create($validatedData);
         // Return a response indicating the successful creation of the activity
         return response()->json([
