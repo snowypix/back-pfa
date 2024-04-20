@@ -24,6 +24,22 @@ class ActivitiesController extends Controller
             abort(404);
         }
     }
+
+    public function listEtud()
+    {
+        // DB::connection()->enableQueryLog();
+        if (auth()->user()->role == 'student') {
+            $user = auth()->user();
+            if ($user instanceof User) {
+                $query = $user->activities()->where('class', $user->class)->where('group', $user->group);
+                $activities = $query->get();
+            return response()->json($activities);
+            }
+        } else {
+            abort(404);
+        }
+    }
+
     public function create(Request $request)
     {
         // Validate the request data
@@ -48,6 +64,7 @@ class ActivitiesController extends Controller
             'activity' => $activity,
         ], 201);
     }
+    
     public function createFile(Request $request)
     {
         // Check if a file was uploaded
