@@ -9,35 +9,27 @@ use Illuminate\Support\Facades\DB;
 
 class ActivitiesController extends Controller
 {
-    public function listProf()
+    public function listActivities()
     {
-        // DB::connection()->enableQueryLog();
-        if (auth()->user()->role == 'prof') {
-            $user = auth()->user();
-            if ($user instanceof User) {
+        $user = auth()->user();
 
+        if (!($user instanceof User)) {
+            abort(404);
+        }
+        
+        switch ($user->role) {
+            case 'prof':
                 $query = $user->activities();
-                $activities = $query->get();
-                return response()->json($activities);
-            }
-        } else {
-            abort(404);
-        }
-    }
-
-    public function listEtud()
-    {
-        // DB::connection()->enableQueryLog();
-        if (auth()->user()->role == 'student') {
-            $user = auth()->user();
-            if ($user instanceof User) {
+                break;
+            case 'student':
                 $query = $user->activities()->where('class', $user->class)->where('group', $user->group);
-                $activities = $query->get();
-            return response()->json($activities);
-            }
-        } else {
-            abort(404);
+                break;
+            default:
+                abort(404);
         }
+        
+        $activities = $query->get();
+        return response()->json($activities);
     }
 
     public function create(Request $request)
@@ -64,7 +56,7 @@ class ActivitiesController extends Controller
             'activity' => $activity,
         ], 201);
     }
-    
+
     public function createFile(Request $request)
     {
         // Check if a file was uploaded
