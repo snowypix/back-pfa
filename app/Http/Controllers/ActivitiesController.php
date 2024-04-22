@@ -16,7 +16,7 @@ class ActivitiesController extends Controller
         if (!($user instanceof User)) {
             abort(404);
         }
-        
+
         switch ($user->role) {
             case 'prof':
                 $query = $user->activities();
@@ -27,7 +27,7 @@ class ActivitiesController extends Controller
             default:
                 abort(404);
         }
-        
+
         $activities = $query->get();
         return response()->json($activities);
     }
@@ -42,14 +42,38 @@ class ActivitiesController extends Controller
             'group' => 'required|string',
             'type' => 'required|string',
             'description' => 'required|string',
-            'filePaths' => 'string',
-            'dateRemise' => 'string'
+            'dateRemise' => 'nullable|string', // Allow dateRemise to be nullable
         ]);
-        $validatedData['filePaths'] = json_encode($validatedData['filePaths']);
+
+        // Initialize an array to hold file paths
+        $filePaths = [];
+
+        // Check if files were uploaded
+        if ($request->hasFile('filePaths')) {
+            foreach ($request->file('filePaths') as $file) {
+                // Ensure the file is valid
+                if ($file->isValid()) {
+                    // Get the original file name
+                    $fileName = $file->getClientOriginalName();
+
+                    // Define the file path
+                    $filePath = $file->storeAs('uploads', $fileName, 'public');
+                    $file->move(public_path('uploads'), $fileName);
+                    // Add the file path to the filePaths array
+                    $filePaths[] = $filePath;
+                }
+            }
+        }
+
+        // Attach user ID to the validated data
         $validatedData['user_id'] = auth()->user()->id;
+
+        // Include file paths in the data to be saved
+        $validatedData['filePaths'] = json_encode($filePaths);
+
         // Create a new activity instance with the validated data
-        // return $validatedData;
         $activity = Activity::create($validatedData);
+
         // Return a response indicating the successful creation of the activity
         return response()->json([
             'message' => 'Activity created successfully',
@@ -57,28 +81,8 @@ class ActivitiesController extends Controller
         ], 201);
     }
 
+
     public function createFile(Request $request)
     {
-        // Check if a file was uploaded
-        if ($request->hasFile('logo')) {
-            // Get the uploaded file
-            $file = $request->file('logo');
-
-            // Get the file name
-            $fileName = $file->getClientOriginalName();
-
-            // Move the uploaded file to a directory
-            $file->move(public_path('uploads'), $fileName);
-
-            // Return a response
-            return response()->json([
-                'fileName' => $fileName
-            ]);
-        } else {
-            // Return an error response
-            return response()->json([
-                'error' => 'No file was uploaded'
-            ], 400);
-        }
     }
 }
