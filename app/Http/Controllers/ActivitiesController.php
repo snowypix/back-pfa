@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use App\Models\User;
+use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ActivitiesController extends Controller
@@ -55,12 +57,20 @@ class ActivitiesController extends Controller
                 if ($file->isValid()) {
                     // Get the original file name
                     $fileName = $file->getClientOriginalName();
+                    // Get the user's name
+                    $userName = auth()->user()->name;
 
-                    // Define the file path
-                    $filePath = $file->storeAs('uploads', $fileName, 'public');
-                    $file->move(public_path('uploads'), $fileName);
-                    // Add the file path to the filePaths array
-                    $filePaths[] = $filePath;
+                    // Create a directory for the user if it doesn't exist
+                    $userDirectory = public_path('uploads') . $userName;
+                    if (!file_exists($userDirectory)) {
+                        mkdir($userDirectory, 0777, true);
+                    }
+
+                    // Move the file to the user's directory
+                    $file->move($userDirectory, $fileName);
+
+                    // Store the file path in an array
+                    $filePaths[] = "uploads" . $userName . "\/" . $fileName;
                 }
             }
         }
