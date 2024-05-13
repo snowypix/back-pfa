@@ -105,4 +105,8 @@ class ActivitiesController extends Controller
         // $user = User::where('id', 3)->first();
         // Submission::where($id);
     }
+    public function getActivity(int $id)
+    {
+        return Activity::find($id);
+    }
 }
