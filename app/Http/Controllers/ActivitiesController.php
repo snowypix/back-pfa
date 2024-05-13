@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
+use App\Models\Submission;
 use App\Models\User;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
@@ -14,7 +15,6 @@ class ActivitiesController extends Controller
     public function listActivities()
     {
         $user = auth()->user();
-
         if (!($user instanceof User)) {
             abort(404);
         }
@@ -24,7 +24,16 @@ class ActivitiesController extends Controller
                 $query = $user->activities();
                 break;
             case 'student':
-                $query = $user->activities()->where('class', $user->class)->where('group', $user->group);
+                return DB::table('activities')
+                    ->leftJoin('submissions', function ($join) {
+                        $user = auth()->user();
+                        $join->on('activities.id', '=', 'submissions.activity_id')
+                            ->where('submissions.student_id', '=', $user->id);
+                    })
+                    ->select('activities.*', 'submissions.status', 'submissions.lecture')
+                    ->where('group', '=', $user->group)
+                    ->where('class', '=', $user->class)
+                    ->get();
                 break;
             default:
                 abort(404);
@@ -91,8 +100,9 @@ class ActivitiesController extends Controller
         ], 201);
     }
 
-
-    public function createFile(Request $request)
+    public function StatusCheck(int $id)
     {
+        // $user = User::where('id', 3)->first();
+        // Submission::where($id);
     }
 }
