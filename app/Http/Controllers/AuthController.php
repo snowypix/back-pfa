@@ -23,7 +23,7 @@ class AuthController extends Controller
         if (Auth::attempt($validatedData)) {
             $user = User::where('email', $request->input('email'))->first();
             $header = base64_encode(json_encode(['alg' => 'HS256', 'typ' => 'JWT']));
-            $payload = base64_encode(json_encode(['sub' => $user->id, 'name' => $user->name, 'role' => $user->role]));
+            $payload = base64_encode(json_encode(['sub' => $user->id, 'name' => $user->name, 'group' => $user->group, 'class' => $user->class, 'role' => $user->role]));
             $signature = base64_encode(hash_hmac('sha256', $header . '.' . $payload, 'your-secret-key', true));
             $response = new Response('Logged in');
             return response()->json(['token' => $header . '.' . $payload . '.' . $signature], 201);

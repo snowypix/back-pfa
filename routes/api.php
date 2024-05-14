@@ -23,6 +23,7 @@ Route::prefix('admin')->middleware([VerifyJwt::class, Admin::class])->group(func
     // More routes...
 });
 Route::get('/activities', [ActivitiesController::class, 'listActivities'])->name('list')->middleware([VerifyJwt::class]);
+Route::get('/homeworks', [ActivitiesController::class, 'listActivities'])->name('list')->middleware([VerifyJwt::class]);
 Route::get('/activity/{id}', [ActivitiesController::class, 'getActivity'])->name('get');
 Route::post('/submitWorkFiles/{id}', [ActivitiesController::class, 'submitWorkFiles'])->name('submitWorkFiles');
 Route::get('/statusCheck/{id}', [ActivitiesController::class, 'StatusCheck'])->name('status');
