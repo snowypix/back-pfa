@@ -109,4 +109,50 @@ class ActivitiesController extends Controller
     {
         return Activity::find($id);
     }
+    public function submitWorkFiles(Request $request, int $id)
+    {
+        // Initialize an array to hold file paths
+        $filePaths = [];
+        // Check if files were uploaded
+        if ($request->hasFile('filePaths')) {
+            // abort(401);
+            foreach ($request->file('filePaths') as $file) {
+                // Ensure the file is valid
+                if ($file->isValid()) {
+
+                    // Get the original file name
+                    $fileName = $file->getClientOriginalName();
+                    // Get the user's name
+                    $userName = auth()->user()->name;
+
+                    // Create a directory for the user if it doesn't exist
+                    $userDirectory = public_path('uploads') . $userName . date("H-i-s");
+                    // dd($userDirectory);
+                    if (!file_exists($userDirectory)) {
+                        mkdir($userDirectory, 0777, true);
+                    }
+
+                    // Move the file to the user's directory
+                    $file->move($userDirectory, $fileName);
+                    // $submission = Submission::Create("");
+                    // Store the file path in an array
+                    // $filePaths[] = "uploads" . $userName . "\/" . $fileName . date("H:i:s");
+                } else {
+                    return 'invalid';
+                }
+            }
+        } else {
+            return 'no file given';
+        }
+
+        // Attach user ID to the validated data
+        // $validatedData['user_id'] = auth()->user()->id;
+
+        // Include file paths in the data to be saved
+        // $validatedData['filePaths'] = json_encode($filePaths);
+        // Return a response indicating the successful creation of the activity
+        return response()->json([
+            'message' => 'Submitted work successfully'
+        ], 201);
+    }
 }
