@@ -24,9 +24,9 @@ Route::prefix('admin')->middleware([VerifyJwt::class, Admin::class])->group(func
 });
 Route::get('/activities', [ActivitiesController::class, 'listActivities'])->name('list')->middleware([VerifyJwt::class]);
 Route::get('/homeworks', [ActivitiesController::class, 'listActivities'])->name('list')->middleware([VerifyJwt::class]);
-Route::get('/activity/{id}', [ActivitiesController::class, 'getActivity'])->name('get');
-Route::post('/submitWorkFiles/{id}', [ActivitiesController::class, 'submitWorkFiles'])->name('submitWorkFiles');
-Route::get('/statusCheck/{id}', [ActivitiesController::class, 'StatusCheck'])->name('status');
+Route::get('/activity/{id}', [ActivitiesController::class, 'getActivity'])->name('get')->middleware([VerifyJwt::class]);
+Route::post('/submitWorkFiles/{id}', [ActivitiesController::class, 'submitWorkFiles'])->name('submitWorkFiles')->middleware([VerifyJwt::class]);
+Route::get('/submitstatus/{id}', [ActivitiesController::class, 'submitStatus'])->name('submitStatus')->middleware([VerifyJwt::class]);
 Route::post('/activities/create', [ActivitiesController::class, 'create'])->name('create')->middleware([VerifyJwt::class]);
 Route::post('/activities/create/file', [ActivitiesController::class, 'createFile'])->name('create')->middleware([VerifyJwt::class]);
 Route::post('/login', [AuthController::class, 'login'])->name('login');

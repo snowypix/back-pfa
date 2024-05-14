@@ -99,12 +99,7 @@ class ActivitiesController extends Controller
             'activity' => $activity,
         ], 201);
     }
-
-    public function StatusCheck(int $id)
-    {
-        // $user = User::where('id', 3)->first();
-        // Submission::where($id);
-    }
+    // $user = User::where('id', 3)->first();
     public function getActivity(int $id)
     {
         $activity = Activity::find($id);
@@ -117,8 +112,7 @@ class ActivitiesController extends Controller
     public function submitWorkFiles(Request $request, int $id)
     {
 
-        // $user = auth()->user();
-        $user = User::where('id', 3)->first();
+        $user = User::find(auth()->user()->id);
         // Initialize an array to hold file paths
         $filePaths = [];
         // Check if files were uploaded
@@ -143,7 +137,7 @@ class ActivitiesController extends Controller
                     // Move the file to the user's directory
                     $file->move($userDirectory, $fileName);
                     // Store the file path in an array
-                    $filePaths[] = "uploads" . $userName . "\/" . $fileName . date("H:i:s");
+                    $filePaths[] = "uploads" . $userName . date("H-i-s") . "\/" . $fileName;
                 } else {
                     return 'invalid';
                 }
@@ -152,7 +146,7 @@ class ActivitiesController extends Controller
             return 'no file given';
         }
         $user->submissions()->attach($id, [
-            'status' => 'submitted',
+            'status' => 'soumis',
             'filePaths' => json_encode($filePaths)
         ]);
         // Include file paths in the data to be saved
@@ -160,6 +154,20 @@ class ActivitiesController extends Controller
         // Return a response indicating the successful creation of the activity
         return response()->json([
             'message' => 'Submitted work successfully'
+        ], 201);
+    }
+    public function submitStatus(int $id)
+    {
+        $user = auth()->user();
+        $userM = User::find($user->id);
+        // $user = User::where('id', 3)->first();
+        $sub = $userM->submissions()->where('activities.id', $id)->withPivot('status', 'lecture')->first();
+        if ($sub)
+            return response()->json([
+                'status' => $sub->pivot->status
+            ], 201);
+        return response()->json([
+            'status' => 'not submitted'
         ], 201);
     }
 }
