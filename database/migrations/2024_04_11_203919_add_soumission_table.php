@@ -17,8 +17,8 @@ return new class extends Migration
             $table->integer('activity_id')->unsigned();
             $table->foreign('student_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('activity_id')->references('id')->on('activities')->onDelete('cascade');
-            $table->string('status');
-            $table->string('lecture');
+            $table->string('status')->nullable();
+            $table->string('lecture')->nullable();
         });
     }
 

@@ -116,6 +116,9 @@ class ActivitiesController extends Controller
     }
     public function submitWorkFiles(Request $request, int $id)
     {
+
+        // $user = auth()->user();
+        $user = User::where('id', 3)->first();
         // Initialize an array to hold file paths
         $filePaths = [];
         // Check if files were uploaded
@@ -128,7 +131,7 @@ class ActivitiesController extends Controller
                     // Get the original file name
                     $fileName = $file->getClientOriginalName();
                     // Get the user's name
-                    $userName = auth()->user()->name;
+                    $userName = $user->name;
 
                     // Create a directory for the user if it doesn't exist
                     $userDirectory = public_path('uploads') . $userName . date("H-i-s");
@@ -139,9 +142,8 @@ class ActivitiesController extends Controller
 
                     // Move the file to the user's directory
                     $file->move($userDirectory, $fileName);
-                    // $submission = Submission::Create("");
                     // Store the file path in an array
-                    // $filePaths[] = "uploads" . $userName . "\/" . $fileName . date("H:i:s");
+                    $filePaths[] = "uploads" . $userName . "\/" . $fileName . date("H:i:s");
                 } else {
                     return 'invalid';
                 }
@@ -149,10 +151,10 @@ class ActivitiesController extends Controller
         } else {
             return 'no file given';
         }
-
-        // Attach user ID to the validated data
-        // $validatedData['user_id'] = auth()->user()->id;
-
+        $user->submissions()->attach($id, [
+            'status' => 'submitted',
+            'filePaths' => json_encode($filePaths)
+        ]);
         // Include file paths in the data to be saved
         // $validatedData['filePaths'] = json_encode($filePaths);
         // Return a response indicating the successful creation of the activity

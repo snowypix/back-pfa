@@ -1,0 +1,11 @@
+nom_voiture;annee;prix;quantite
+fiat;2020;180000;3
+toyota;2021;20000;5
+dacia;2022;160000;4
+bmw;1999;34000;1
+renault;2000;20000;1
+fiat;2019;140000;5
+fiat;2019;70000;1
+fiat;2015;12000;1
+toyota;2014;100000;2
+dacia;2010;90000;5
