@@ -107,7 +107,12 @@ class ActivitiesController extends Controller
     }
     public function getActivity(int $id)
     {
-        return Activity::find($id);
+        $activity = Activity::find($id);
+        if (!$activity) {
+            abort(404); // Use abort helper to return 404 status code
+        }
+
+        return $activity;
     }
     public function submitWorkFiles(Request $request, int $id)
     {
