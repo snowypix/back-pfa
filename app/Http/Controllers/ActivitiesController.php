@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use App\Models\Submission;
 use App\Models\User;
+use DateTime;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -111,7 +112,14 @@ class ActivitiesController extends Controller
     }
     public function submitWorkFiles(Request $request, int $id)
     {
-
+        $now = new DateTime();
+        $formattedDateTime = $now->format('Y-m-d H:i:s');
+        $activity = Activity::find($id);
+        if ($activity->dateRemise < $formattedDateTime) {
+            return response()->json([
+                'message' => 'Submitting too late'
+            ], 422);
+        }
         $user = User::find(auth()->user()->id);
         // Initialize an array to hold file paths
         $filePaths = [];
