@@ -69,7 +69,8 @@ class ActivitiesController extends Controller
                     $fileName = $file->getClientOriginalName();
                     // Get the user's name
                     $userName = auth()->user()->name;
-
+                    // $user = User::where('id', 3)->first();
+                    // $userName = $user->name;
                     // Create a directory for the user if it doesn't exist
                     $userDirectory = public_path('uploads') . $userName;
                     if (!file_exists($userDirectory)) {
@@ -80,11 +81,10 @@ class ActivitiesController extends Controller
                     $file->move($userDirectory, $fileName);
 
                     // Store the file path in an array
-                    $filePaths[] = "uploads" . $userName . "\/" . $fileName;
+                    $filePaths[] = "uploads" . $userName . "/" . $fileName;
                 }
             }
         }
-
         // Attach user ID to the validated data
         $validatedData['user_id'] = auth()->user()->id;
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActivitiesController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\PostController;
 use App\Http\Middleware\Admin;
 use App\Http\Middleware\VerifyJwt;
@@ -31,3 +32,4 @@ Route::post('/activities/create', [ActivitiesController::class, 'create'])->name
 Route::post('/activities/create/file', [ActivitiesController::class, 'createFile'])->name('create')->middleware([VerifyJwt::class]);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::get('/files/{path}', [FileController::class, 'download'])->name('download')->where('path', '.*');
