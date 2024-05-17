@@ -180,8 +180,9 @@ class ActivitiesController extends Controller
     }
     public function Seen($id)
     {
-        $user = User::where('id', 3)->first();
-        $res = $user->submissions()->where('activities.id', $id)->first();
+        $user = auth()->user();
+        $userM = User::find(auth()->user()->id);
+        $res = $userM->submissions()->where('activities.id', $id)->first();
         if ($res) {
             if ($res->pivot->lecture == 'lu') {
                 DB::table('submissions')
@@ -194,9 +195,11 @@ class ActivitiesController extends Controller
                     ->where('activity_id', $id)
                     ->update(['lecture' => 'lu']);
             }
-            return 'done';
+            return response()->json([
+                'message' => 'done'
+            ], 201);
         }
-        $user->submissions()->attach($id, [
+        $userM->submissions()->attach($id, [
             'lecture' => 'lu'
         ]);
     }
