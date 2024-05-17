@@ -178,4 +178,26 @@ class ActivitiesController extends Controller
             'status' => 'not submitted'
         ], 201);
     }
+    public function Seen($id)
+    {
+        $user = User::where('id', 3)->first();
+        $res = $user->submissions()->where('activities.id', $id)->first();
+        if ($res) {
+            if ($res->pivot->lecture == 'lu') {
+                DB::table('submissions')
+                    ->where('student_id', $user->id)
+                    ->where('activity_id', $id)
+                    ->update(['lecture' => 'non lu']);
+            } else {
+                DB::table('submissions')
+                    ->where('student_id', $user->id)
+                    ->where('activity_id', $id)
+                    ->update(['lecture' => 'lu']);
+            }
+            return 'done';
+        }
+        $user->submissions()->attach($id, [
+            'lecture' => 'lu'
+        ]);
+    }
 }
