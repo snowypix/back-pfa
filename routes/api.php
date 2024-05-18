@@ -28,6 +28,7 @@ Route::get('/homeworks', [ActivitiesController::class, 'listActivities'])->name(
 Route::get('/activity/{id}', [ActivitiesController::class, 'getActivity'])->name('get')->middleware([VerifyJwt::class]);
 Route::post('/submitWorkFiles/{id}', [ActivitiesController::class, 'submitWorkFiles'])->name('submitWorkFiles')->middleware([VerifyJwt::class]);
 Route::patch('/seen/{id}', [ActivitiesController::class, 'Seen'])->name('seen')->middleware([VerifyJwt::class]);
+Route::get('/submissionslist', [ActivitiesController::class, 'SubmissionsList'])->name('submissionsList')->middleware([VerifyJwt::class]);
 Route::patch('/seenOnce/{id}', [ActivitiesController::class, 'SeenOnce'])->name('seenOnce')->middleware([VerifyJwt::class]);
 Route::get('/submitstatus/{id}', [ActivitiesController::class, 'submitStatus'])->name('submitStatus')->middleware([VerifyJwt::class]);
 Route::post('/activities/create', [ActivitiesController::class, 'create'])->name('create')->middleware([VerifyJwt::class]);

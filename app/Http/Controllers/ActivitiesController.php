@@ -233,4 +233,26 @@ class ActivitiesController extends Controller
             'lecture' => 'lu'
         ]);
     }
+    public function SubmissionsList()
+    {
+        $user = auth()->user();
+        $id = $user->id;
+        // Get all submissions for the teacher's activities
+        $submissions = DB::table('submissions')
+            ->join('activities', 'submissions.activity_id', '=', 'activities.id')
+            ->join('users', 'submissions.student_id', '=', 'users.id')
+            ->select(
+                'activities.id as activity_id',
+                'activities.intitule as intitule',
+                'activities.group as group',
+                'activities.matiere as matiere',
+                'activities.class as class',
+                'submissions.filePaths',
+                'users.name as student',
+            )
+            ->where('submissions.status', '=', 'soumis')
+            ->where('activities.user_id', '=', $user->id)
+            ->get();
+        return $submissions;
+    }
 }
