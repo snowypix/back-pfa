@@ -120,7 +120,8 @@ class ActivitiesController extends Controller
                 'message' => 'Submitting too late'
             ], 422);
         }
-        $user = User::find(auth()->user()->id);
+        // $user = User::find(auth()->user()->id);
+        $user = User::where('id', 3)->first();
         // Initialize an array to hold file paths
         $filePaths = [];
         // Check if files were uploaded
@@ -145,7 +146,7 @@ class ActivitiesController extends Controller
                     // Move the file to the user's directory
                     $file->move($userDirectory, $fileName);
                     // Store the file path in an array
-                    $filePaths[] = "uploads" . $userName . date("H-i-s") . "\/" . $fileName;
+                    $filePaths[] = "uploads" . $userName . date("H-i-s") . "/" . $fileName;
                 } else {
                     return 'invalid';
                 }
@@ -153,13 +154,20 @@ class ActivitiesController extends Controller
         } else {
             return 'no file given';
         }
-        $user->submissions()->attach($id, [
-            'status' => 'soumis',
-            'filePaths' => json_encode($filePaths)
-        ]);
-        // Include file paths in the data to be saved
-        // $validatedData['filePaths'] = json_encode($filePaths);
-        // Return a response indicating the successful creation of the activity
+        DB::connection()->enableQueryLog();
+        $res = $user->submissions()->where('activities.id', $id)->first();
+        if ($res) {
+            DB::table('submissions')
+                ->where('student_id', $user->id)
+                ->where('activity_id', $id)
+                ->update(['status' => 'soumis', 'filePaths' => json_encode($filePaths)]);
+        } else {
+            $user->submissions()->attach($id, [
+                'status' => 'soumis',
+                'filePaths' => json_encode($filePaths)
+            ]);
+        }
+
         return response()->json([
             'message' => 'Submitted work successfully'
         ], 201);
