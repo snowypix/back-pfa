@@ -211,4 +211,26 @@ class ActivitiesController extends Controller
             'lecture' => 'lu'
         ]);
     }
+    public function SeenOnce($id)
+    {
+        $user = auth()->user();
+        $userM = User::find(auth()->user()->id);
+        $res = $userM->submissions()->where('activities.id', $id)->first();
+        if ($res) {
+            DB::table('submissions')
+                ->where('student_id', $user->id)
+                ->where('activity_id', $id)
+                ->update(['lecture' => 'lu']);
+            DB::table('submissions')
+                ->where('student_id', $user->id)
+                ->where('activity_id', $id)
+                ->update(['lecture' => 'lu']);
+            return response()->json([
+                'message' => 'done'
+            ], 201);
+        }
+        $userM->submissions()->attach($id, [
+            'lecture' => 'lu'
+        ]);
+    }
 }
