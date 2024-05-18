@@ -72,7 +72,7 @@ class ActivitiesController extends Controller
                     // $user = User::where('id', 3)->first();
                     // $userName = $user->name;
                     // Create a directory for the user if it doesn't exist
-                    $userDirectory = public_path('uploads') . $userName;
+                    $userDirectory = public_path('uploads') . $userName . date("H-i-s");
                     if (!file_exists($userDirectory)) {
                         mkdir($userDirectory, 0777, true);
                     }
@@ -81,7 +81,7 @@ class ActivitiesController extends Controller
                     $file->move($userDirectory, $fileName);
 
                     // Store the file path in an array
-                    $filePaths[] = "uploads" . $userName . "/" . $fileName;
+                    $filePaths[] = "uploads" . $userName . date("H-i-s") . "/" . $fileName;
                 }
             }
         }
