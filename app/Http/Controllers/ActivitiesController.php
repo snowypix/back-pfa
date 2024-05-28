@@ -249,6 +249,7 @@ class ActivitiesController extends Controller
                 'activities.class as class',
                 'submissions.filePaths',
                 'users.name as student',
+                'activities.user_id as prof'
             )
             ->where('submissions.status', '=', 'soumis')
             ->where('activities.user_id', '=', $user->id)
