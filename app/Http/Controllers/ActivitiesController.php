@@ -221,10 +221,6 @@ class ActivitiesController extends Controller
                 ->where('student_id', $user->id)
                 ->where('activity_id', $id)
                 ->update(['lecture' => 'lu']);
-            DB::table('submissions')
-                ->where('student_id', $user->id)
-                ->where('activity_id', $id)
-                ->update(['lecture' => 'lu']);
             return response()->json([
                 'message' => 'done'
             ], 201);
