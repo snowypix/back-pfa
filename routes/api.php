@@ -13,16 +13,12 @@ Route::apiResource('posts', PostController::class);
 
 Route::prefix('admin')->middleware([VerifyJwt::class, Admin::class])->group(function () {
     // Your protected API routes here
-    Route::get('/users', function () {
-        return 'users';
-    });
+    Route::get('/users', function () { return 'users'; });
 
-    Route::post('/products', function () {
-        // Logic for products API
-    });
+    Route::post('/products', function () {});
 
-    // More routes...
 });
+
 Route::get('/activities', [ActivitiesController::class, 'listActivities'])->name('list')->middleware([VerifyJwt::class]);
 Route::get('/homeworks', [ActivitiesController::class, 'listActivities'])->name('list')->middleware([VerifyJwt::class]);
 Route::get('/activity/{id}', [ActivitiesController::class, 'getActivity'])->name('get')->middleware([VerifyJwt::class]);
