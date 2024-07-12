@@ -221,10 +221,6 @@ class ActivitiesController extends Controller
                 ->where('student_id', $user->id)
                 ->where('activity_id', $id)
                 ->update(['lecture' => 'lu']);
-            DB::table('submissions')
-                ->where('student_id', $user->id)
-                ->where('activity_id', $id)
-                ->update(['lecture' => 'lu']);
             return response()->json([
                 'message' => 'done'
             ], 201);
@@ -249,6 +245,7 @@ class ActivitiesController extends Controller
                 'activities.class as class',
                 'submissions.filePaths',
                 'users.name as student',
+                'activities.user_id as prof'
             )
             ->where('submissions.status', '=', 'soumis')
             ->where('activities.user_id', '=', $user->id)
